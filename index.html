@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menu Digital</title>
+<meta name="theme-color" content="#2d5a27">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%98%95%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================= DESIGN TOKENS ================= */
+:root{--bg:#f8f6f3;--card:#ffffff;--text:#1a1615;--muted:#8c827a;--accent:#2d5a27;--accent-light:#e8f0e6;--on:#ffffff;--border:#efe9e1;--chip:#eee8e0;--glass:rgba(248,246,243,.92);--shadow:0 12px 30px -10px rgba(60,40,20,.18);--shadow-sm:0 2px 10px rgba(60,40,20,.06);--ok:#1f7a45;--okbg:#e3f4ea;--warn:#9a5b00;--warnbg:#fff0d6;--bad:#b3261e;--badbg:#fde7e5;--tb:64px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12100e;--card:#1c1815;--text:#f5ece5;--muted:#a39589;--accent:#4ade80;--accent-light:#183321;--on:#0d1f12;--border:#2e2620;--chip:#29221c;--glass:rgba(18,16,14,.9);--shadow:0 14px 34px -10px rgba(0,0,0,.65);--shadow-sm:0 2px 10px rgba(0,0,0,.35);--ok:#6fd49a;--okbg:#17301f;--warn:#f0b955;--warnbg:#3a2c10;--bad:#ff8a80;--badbg:#3a1815}}
+:root[data-theme="dark"]{--bg:#12100e;--card:#1c1815;--text:#f5ece5;--muted:#a39589;--accent:#4ade80;--accent-light:#183321;--on:#0d1f12;--border:#2e2620;--chip:#29221c;--glass:rgba(18,16,14,.9);--shadow:0 14px 34px -10px rgba(0,0,0,.65);--shadow-sm:0 2px 10px rgba(0,0,0,.35);--ok:#6fd49a;--okbg:#17301f;--warn:#f0b955;--warnbg:#3a2c10;--bad:#ff8a80;--badbg:#3a1815}
+
+/* ================= BASE ================= */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+button,input{font-family:inherit}
+h1{margin:0;font-size:24px;font-weight:800;letter-spacing:-.5px}
+h2{font-size:17px;font-weight:800;letter-spacing:-.3px;margin:18px 0 8px}
+.tag,.muted{color:var(--muted);font-size:13px}
+input[type=text],input[type=email],input[type=password]{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:14px;background:var(--bg);color:var(--text);font-size:16px;outline:0;transition:border-color .2s,box-shadow .2s}
+input[type=text]:focus,input[type=email]:focus,input[type=password]:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-light)}
+.row{display:flex;gap:8px;margin-top:12px}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:6px}
+.banner{background:var(--warnbg);color:var(--warn);padding:10px 14px;border-radius:14px;font-size:12px;font-weight:600;margin-top:10px}
+.empty{text-align:center;color:var(--muted);padding:36px 0}
+.badge{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;padding:4px 10px;border-radius:99px}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+/* ================= TOP BAR (glass) ================= */
+.tb{position:sticky;top:0;z-index:10;background:var(--glass);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);padding-top:env(safe-area-inset-top,0px);border-bottom:1px solid var(--border)}
+.tbi{max-width:680px;margin:0 auto;height:var(--tb);padding:0 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.tbn{font-size:21px;font-weight:800;letter-spacing:-.5px;line-height:1.15}
+.tbt{color:var(--muted);font-size:12px;font-weight:500}
+.cartbtn{position:relative;flex:none;width:46px;height:46px;border-radius:15px;border:1px solid var(--border);background:var(--card);box-shadow:var(--shadow-sm);font-size:19px;cursor:pointer;transition:transform .15s}
+.cartbtn:active{transform:scale(.93)}
+.cartbtn:disabled{opacity:.6}
+.cn{position:absolute;top:-6px;right:-6px;min-width:22px;height:22px;border-radius:99px;background:var(--accent);color:var(--on);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 6px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.bump{animation:pop .35s ease}
+.pad{max-width:680px;margin:0 auto;padding:0 16px}
+
+/* ================= CAROUSEL BEST SELLER ================= */
+.car{position:relative;display:flex;gap:14px;max-width:680px;margin:10px auto 0;padding:6px 16px 14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:16px;scrollbar-width:none}
+.car::-webkit-scrollbar{display:none}
+.slide{position:relative;overflow:hidden;flex:0 0 100%;scroll-snap-align:start;min-height:150px;border-radius:24px;padding:20px;display:flex;justify-content:space-between;align-items:center;gap:10px;background:linear-gradient(135deg,#2d5a27 0%,#1a3a16 100%);color:#fff;box-shadow:var(--shadow)}
+.slide:nth-child(even){background:linear-gradient(135deg,#6f4e37 0%,#3b2a1e 100%)}
+.slide::before{content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.08)}
+.slide>*{position:relative}
+.slide .badge{background:rgba(255,255,255,.22);color:#fff;backdrop-filter:blur(4px)}
+.sl-n{font-size:20px;font-weight:800;margin-top:10px;line-height:1.2;letter-spacing:-.3px}
+.sl-p{opacity:.9;font-size:14px;font-weight:600;margin-top:2px}
+.slide .btn{background:#fff;color:#1f3d1b;box-shadow:none;margin-top:12px;padding:9px 16px;font-size:13px;border-radius:12px}
+.sl-a{width:96px;height:96px;flex:none;border-radius:22px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:52px;background:rgba(255,255,255,.14)}
+.sl-a img{width:100%;height:100%;object-fit:cover}
+
+/* ================= KATEGORI (pills) ================= */
+.catsw{position:sticky;top:calc(var(--tb) + env(safe-area-inset-top,0px));z-index:9;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:10px 0}
+.cats{max-width:680px;margin:0 auto;padding:0 16px;display:flex;gap:10px;overflow-x:auto;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:10px 18px;border:1px solid var(--border);border-radius:99px;background:var(--card);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .25s cubic-bezier(.4,0,.2,1)}
+.cat .ic{font-size:16px;line-height:1}
+.cat:active{transform:scale(.96)}
+.cat.on{background:var(--accent);color:var(--on);border-color:var(--accent);box-shadow:0 6px 16px -4px rgba(45,90,39,.45)}
+
+/* ================= DAFTAR MENU ================= */
+.listw{max-width:680px;margin:0 auto;padding:0 16px 130px;scroll-margin-top:calc(var(--tb) + env(safe-area-inset-top,0px) + 66px)}
+.listw h2{font-size:18px;margin:20px 0 12px}
+.item{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:12px;margin-bottom:12px;box-shadow:var(--shadow-sm);transition:box-shadow .2s}
+.item.out{opacity:.5;filter:grayscale(1)}
+@media (hover:hover){.item:hover{box-shadow:var(--shadow)}}
+.ph{width:80px;height:80px;border-radius:16px;object-fit:cover;flex:none;background:var(--chip)}
+img.ph:not(.ok){background:linear-gradient(90deg,var(--chip) 25%,var(--bg) 50%,var(--chip) 75%);background-size:200% 100%;animation:shimmer 1.3s linear infinite}
+.ph-ic{display:flex;align-items:center;justify-content:center;font-size:36px;background:var(--accent-light)}
+.ibody{flex:1;min-width:0}
+.name{font-weight:700;font-size:15px;line-height:1.25}
+.desc{color:var(--muted);font-size:12px;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.price{margin-top:6px;font-weight:800;font-size:15px;color:var(--accent)}
+.qty{display:flex;align-items:center;gap:6px;flex:none}
+.qty button{width:34px;height:34px;border-radius:11px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:17px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.qty button.add{background:var(--accent);color:var(--on);border-color:var(--accent);box-shadow:0 4px 10px -2px rgba(45,90,39,.45)}
+.qty button:active{transform:scale(.88)}
+.qty span{min-width:16px;text-align:center;font-weight:800;font-size:14px}
+
+/* ================= BAR BAWAH MELAYANG ================= */
+.bar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:656px;margin:0 auto;background:var(--glass);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border:1px solid var(--border);border-radius:24px;padding:10px 10px 10px 20px;box-shadow:var(--shadow);z-index:10;transition:transform .4s cubic-bezier(.16,1,.3,1),opacity .25s}
+.bar.hide{transform:translateY(160%);opacity:0;pointer-events:none}
+.bar .in{display:flex;gap:12px;align-items:center}
+.sum{flex:1;font-size:12px;color:var(--muted);font-weight:500}
+.sum b{display:block;color:var(--text);font-size:18px;font-weight:800;letter-spacing:-.3px}
+
+/* ================= TOMBOL ================= */
+.btn{background:var(--accent);color:var(--on);border:0;padding:14px 24px;border-radius:16px;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 6px 16px -4px rgba(45,90,39,.45);transition:transform .15s,opacity .2s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;box-shadow:none;cursor:not-allowed}
+.btn.full{width:100%;margin-top:16px}
+.btn.ghost{background:var(--chip);color:var(--text);box-shadow:none}
+.btn.sm{padding:9px 14px;font-size:13px;border-radius:12px}
+.btn.bad{background:var(--badbg);color:var(--bad);box-shadow:none}
+.link{background:none;border:0;color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;padding:6px 0}
+
+/* ================= BOTTOM SHEET (checkout & status) ================= */
+.ov{position:fixed;inset:0;z-index:20;background:rgba(10,8,6,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:flex-end;animation:fade .25s ease}
+.sheet{width:100%;max-width:680px;margin:0 auto;background:var(--card);border-radius:28px 28px 0 0;padding:14px 18px calc(28px + env(safe-area-inset-bottom,0px));box-shadow:0 -12px 40px rgba(0,0,0,.25);max-height:92vh;overflow-y:auto;animation:slideUp .4s cubic-bezier(.16,1,.3,1)}
+.grab{width:42px;height:5px;border-radius:99px;background:var(--border);margin:0 auto 10px}
+.frow{display:flex;gap:10px;margin-top:6px}
+.f{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:600;color:var(--muted)}
+.f.grow{flex:1;min-width:0}
+.f.meja{width:92px;flex:none}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px 16px;margin-top:10px;box-shadow:var(--shadow-sm)}
+.receipt{background:var(--bg);border:1.5px dashed var(--border);box-shadow:none}
+.rc-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding-bottom:8px;margin-bottom:6px;border-bottom:1px dashed var(--border);font-size:12px;color:var(--muted)}
+.rc-top b{color:var(--text);font-size:15px;font-weight:800}
+.ln{display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:14px}
+.ln.tot{border-top:1px dashed var(--border);margin-top:8px;padding-top:10px;font-weight:800;font-size:16px}
+.opt{display:flex;align-items:center;gap:12px;background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,background .2s}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-light)}
+.opt input{accent-color:var(--accent);width:18px;height:18px;margin:0;flex:none}
+.oi{font-size:22px;line-height:1}
+.ot b{font-size:14px;font-weight:700}
+.box{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:14px;margin-top:12px}
+.box.ok{background:var(--okbg);color:var(--ok);border-color:transparent;font-weight:600}
+.qris{width:100%;max-width:260px;display:block;margin:12px auto;border-radius:14px;background:#fff;padding:8px;box-shadow:var(--shadow-sm)}
+.pill{display:inline-block;font-size:12px;padding:4px 11px;border-radius:99px;font-weight:700;margin-right:6px}
+.pill.ok{background:var(--okbg);color:var(--ok)}
+.pill.warn{background:var(--warnbg);color:var(--warn)}
+.pill.bad{background:var(--badbg);color:var(--bad)}
+
+/* ================= KASIR ================= */
+#kasir{padding-top:env(safe-area-inset-top,0px)}
+.wrap{max-width:680px;margin:0 auto;padding:0 16px 40px}
+.wrap header{padding:22px 0 8px}
+.chip{flex:none;border:1px solid var(--border);padding:8px 16px;border-radius:99px;background:var(--card);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;box-shadow:var(--shadow-sm)}
+.chip.on{background:var(--accent);color:var(--on);border-color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:18px}
+.tabs{display:flex;gap:8px;margin:14px 0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:10px 12px;font-size:11px;color:var(--muted);box-shadow:var(--shadow-sm)}
+.stat b{display:block;font-size:16px;font-weight:800;color:var(--text)}
+.ohead{display:flex;justify-content:space-between;gap:8px;font-weight:800}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
+/* ---- Editor menu (kasir) ---- */
+.mstat{min-height:20px;font-size:13px;font-weight:700;color:var(--ok);margin-bottom:6px}
+.mstat.bad{color:var(--bad)}
+.mcat{margin-top:16px}
+.mhead{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.mhead input{font-weight:700}
+.mhead input.mi-icon{width:64px;flex:none;text-align:center;font-size:20px;padding:10px 4px}
+.mi{padding:10px 12px;margin-top:8px}
+.mrow{display:flex;align-items:center;gap:8px}
+.mname{flex:1;min-width:0;display:flex;flex-direction:column}
+.mname b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mfields{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.mfields .frow{margin-top:0}
+.mfields .frow .f{flex:1;min-width:0}
+.mfields .btn{align-self:flex-start}
+
+/* ---- Tab, pengaturan, QR meja ---- */
+.tops{display:flex;gap:6px;align-items:center}
+.tabs{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.photo-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.photo-row .ph{width:56px;height:56px;font-size:24px}
+label.btn{display:inline-flex;align-items:center;cursor:pointer}
+.qprev{width:100%;max-width:220px;border-radius:12px;background:#fff;padding:6px;border:1px solid var(--border);display:block}
+.qrgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.qrc{background:#fff;color:#000;border:1px solid var(--border);border-radius:16px;padding:12px;text-align:center}
+.qrc svg{width:100%;height:auto;display:block}
+.qrt{font-weight:800;font-size:14px}
+.qrm{font-size:22px;font-weight:800;margin-top:2px}
+.qrs{font-size:11px;color:#555}
+@media print{
+  html,body{background:#fff!important}
+  .noprint,.tb,.bar,#cust,#ov{display:none!important}
+  #kasir{padding:0}
+  .wrap{max-width:none;padding:0}
+  .qrgrid{grid-template-columns:repeat(3,1fr);gap:10px;margin-top:0}
+  .qrc{break-inside:avoid;border:1px solid #000;border-radius:0}
+}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<section id="cust">
+  <div class="tb"><div class="tbi">
+    <div><div class="tbn" id="nm"></div><div class="tbt" id="tg"></div></div>
+    <button class="cartbtn" id="cartBtn" aria-label="Lihat pesanan" disabled>🛒<span class="cn" id="cartN" hidden>0</span></button>
+  </div></div>
+  <div class="pad" id="banner"></div>
+  <div class="car" id="car" aria-label="Menu rekomendasi"></div>
+  <div class="catsw"><div class="cats" id="cats" aria-label="Kategori"></div></div>
+  <main class="listw" id="list"></main>
+  <div class="bar"><div class="in">
+    <div class="sum"><span id="cnt">0x Pesanan</span><b id="tot">Rp0</b></div>
+    <button class="btn" id="go" disabled>Pesan</button>
+  </div></div>
+</section>
+<section id="kasir" hidden></section>
+<div id="ov" class="ov" hidden></div>
+
+<script type="module">
+/* ================= KONFIGURASI (edit bagian ini saja) ================= */
+const FIREBASE_CONFIG = {
+  apiKey: "ISI_API_KEY",
+  authDomain: "ISI_PROJECT_ID.firebaseapp.com",
+  projectId: "ISI_PROJECT_ID",
+  appId: "ISI_APP_ID"
+};
+// Nilai bawaan. Nama, tagline, rekening, dan QRIS diubah kasir lewat tab Pengaturan
+// (disimpan di database dan menggantikan nilai di bawah ini).
+const CAFE_DEFAULT = {
+  name: "Kopi Contoh",
+  tagline: "Pesan dari meja, tanpa antre",
+  qrisImage: "qris.png",
+  bank: { name: "BCA", number: "1234567890", holder: "Kopi Contoh" }
+};
+let CAFE = { ...CAFE_DEFAULT, qris: "", open: true };
+// Ini MENU BAWAAN. Setelah kasir menyimpan perubahan lewat tab Menu di halaman kasir, data di database yang dipakai.
+// Foto menu OPSIONAL: isi img: "img/nama.webp" (sekitar 200x200 px, di bawah 60 KB). Tanpa img, kartu tampil tanpa foto.
+// demoImg di bawah hanya contoh tampilan, hapus dan ganti dengan foto asli.
+const demoImg = (emoji, bg) => "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='144' height='144'><rect width='144' height='144' fill='${bg}'/><text x='72' y='96' font-size='72' text-anchor='middle'>${emoji}</text></svg>`);
+const DEFAULT_MENU = [
+  { cat: "Kopi", icon: "☕", items: [
+    { id: "k1", name: "Es Kopi Susu Gula Aren", desc: "Espresso, susu segar, gula aren.", price: 18000, tag: "Best Seller", img: demoImg("🧋", "#f3dcc4") },
+    { id: "k2", name: "Americano", desc: "Double shot espresso, panas/es.", price: 15000 },
+    { id: "k3", name: "Cappuccino", desc: "Espresso, susu, foam tebal.", price: 20000, img: demoImg("☕", "#e8d2bd") },
+    { id: "k4", name: "Kopi Tubruk Lokal", desc: "Biji lokal, seduh tradisional.", price: 10000 }
+  ]},
+  { cat: "Non-Kopi", icon: "🥤", items: [
+    { id: "n1", name: "Matcha Latte", desc: "Matcha premium, susu, es batu.", price: 22000, img: demoImg("🍵", "#dfeccf") },
+    { id: "n2", name: "Coklat Dingin", desc: "Coklat pekat, susu, es batu.", price: 20000 },
+    { id: "n3", name: "Teh Lemon", desc: "Teh seduh, lemon, madu.", price: 12000, soldOut: true }
+  ]},
+  { cat: "Makanan", icon: "🍛", items: [
+    { id: "m1", name: "Nasi Ayam Geprek", desc: "Ayam crispy, sambal bawang, lalapan.", price: 25000, tag: "Favorit", img: demoImg("🍗", "#fbe0c3") },
+    { id: "m2", name: "Mie Goreng Spesial", desc: "Telur, sayur, kerupuk.", price: 20000 }
+  ]},
+  { cat: "Snack", icon: "🍟", items: [
+    { id: "s1", name: "Kentang Goreng", desc: "Renyah, bumbu balado/keju.", price: 15000, img: demoImg("🍟", "#fcefb4") },
+    { id: "s2", name: "Roti Bakar Coklat Keju", desc: "Tebal, lumer, porsi sharing.", price: 16000 }
+  ]}
+];
+/* ====================================================================== */
+
+const $ = (s, r = document) => r.querySelector(s);
+const rp = (n) => "Rp" + Number(n).toLocaleString("id-ID");
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const ms = (v) => (v && typeof v.toMillis === "function" ? v.toMillis() : typeof v === "number" ? v : Date.now());
+const hhmm = (v) => new Date(ms(v)).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage tidak tersedia */ } },
+  del(k) { try { localStorage.removeItem(k); } catch { /* storage tidak tersedia */ } }
+};
+const METHODS = { cash: "Tunai / Bayar di kasir", qris: "QRIS", transfer: "Transfer Bank" };
+const MICON = { cash: "💵", qris: "📱", transfer: "🏦" };
+const STATUS = { baru: "Terkirim ke kasir", diproses: "Sedang diproses", selesai: "Selesai", batal: "Dibatalkan" };
+
+/*QR-START*/
+const QR = (() => {
+  // Pembuat QR code (mode byte, koreksi error M, versi 1-10), tanpa pustaka luar dan tanpa internet.
+  const BLOCKS = {
+    1: [10, [[1, 16]]], 2: [16, [[1, 28]]], 3: [26, [[1, 44]]], 4: [18, [[2, 32]]], 5: [24, [[2, 43]]],
+    6: [16, [[4, 27]]], 7: [18, [[4, 31]]], 8: [22, [[2, 38], [2, 39]]], 9: [22, [[3, 36], [2, 37]]], 10: [26, [[4, 43], [1, 44]]]
+  };
+  const ALIGN = { 1: [], 2: [6, 18], 3: [6, 22], 4: [6, 26], 5: [6, 30], 6: [6, 34], 7: [6, 22, 38], 8: [6, 24, 42], 9: [6, 26, 46], 10: [6, 28, 50] };
+  const MASKS = [
+    (x, y) => (x + y) % 2 === 0,
+    (x, y) => y % 2 === 0,
+    (x, y) => x % 3 === 0,
+    (x, y) => (x + y) % 3 === 0,
+    (x, y) => (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0,
+    (x, y) => ((x * y) % 2) + ((x * y) % 3) === 0,
+    (x, y) => (((x * y) % 2) + ((x * y) % 3)) % 2 === 0,
+    (x, y) => (((x + y) % 2) + ((x * y) % 3)) % 2 === 0
+  ];
+  const dataCodewords = (v) => BLOCKS[v][1].reduce((a, [n, d]) => a + n * d, 0);
+
+  const gfMul = (x, y) => {
+    let z = 0;
+    for (let i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11d); z ^= ((y >>> i) & 1) * x; }
+    return z;
+  };
+  const rsDivisor = (deg) => {
+    const r = new Array(deg).fill(0);
+    r[deg - 1] = 1;
+    let root = 1;
+    for (let i = 0; i < deg; i++) {
+      for (let j = 0; j < deg; j++) { r[j] = gfMul(r[j], root); if (j + 1 < deg) r[j] ^= r[j + 1]; }
+      root = gfMul(root, 2);
+    }
+    return r;
+  };
+  const rsRemainder = (data, div) => {
+    const r = new Array(div.length).fill(0);
+    for (const b of data) {
+      const f = b ^ r.shift();
+      r.push(0);
+      div.forEach((c, i) => { r[i] ^= gfMul(c, f); });
+    }
+    return r;
+  };
+
+  function encode(text) {
+    const bytes = Array.from(new TextEncoder().encode(String(text)));
+    let version = 0;
+    for (let v = 1; v <= 10; v++) {
+      if (4 + (v <= 9 ? 8 : 16) + bytes.length * 8 <= dataCodewords(v) * 8) { version = v; break; }
+    }
+    if (!version) throw new Error("Alamat web terlalu panjang untuk QR (maksimal sekitar 210 karakter).");
+
+    const bits = [];
+    const push = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); };
+    push(4, 4);
+    push(bytes.length, version <= 9 ? 8 : 16);
+    bytes.forEach((b) => push(b, 8));
+    const cap = dataCodewords(version) * 8;
+    push(0, Math.min(4, cap - bits.length));
+    while (bits.length % 8) bits.push(0);
+    for (let pad = 0xec; bits.length < cap; pad ^= 0xec ^ 0x11) push(pad, 8);
+    const data = [];
+    for (let i = 0; i < bits.length; i += 8) data.push(parseInt(bits.slice(i, i + 8).join(""), 2));
+
+    const [ecLen, groups] = BLOCKS[version];
+    const blocks = [];
+    let pos = 0;
+    for (const [count, dlen] of groups) for (let i = 0; i < count; i++) { blocks.push(data.slice(pos, pos + dlen)); pos += dlen; }
+    const div = rsDivisor(ecLen);
+    const ecs = blocks.map((b) => rsRemainder(b, div));
+    const out = [];
+    const maxD = Math.max(...blocks.map((b) => b.length));
+    for (let i = 0; i < maxD; i++) blocks.forEach((b) => { if (i < b.length) out.push(b[i]); });
+    for (let i = 0; i < ecLen; i++) ecs.forEach((e) => out.push(e[i]));
+
+    const size = version * 4 + 17;
+    const grid = Array.from({ length: size }, () => new Array(size).fill(false));
+    const isFn = Array.from({ length: size }, () => new Array(size).fill(false));
+    const setFn = (g, x, y, dark) => { g[y][x] = dark; isFn[y][x] = true; };
+
+    const drawFormat = (g, mask) => {
+      const d = mask; // koreksi error M = 00
+      let rem = d;
+      for (let i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+      const fb = ((d << 10) | rem) ^ 0x5412;
+      const bit = (i) => ((fb >>> i) & 1) !== 0;
+      for (let i = 0; i <= 5; i++) setFn(g, 8, i, bit(i));
+      setFn(g, 8, 7, bit(6)); setFn(g, 8, 8, bit(7)); setFn(g, 7, 8, bit(8));
+      for (let i = 9; i < 15; i++) setFn(g, 14 - i, 8, bit(i));
+      for (let i = 0; i < 8; i++) setFn(g, size - 1 - i, 8, bit(i));
+      for (let i = 8; i < 15; i++) setFn(g, 8, size - 15 + i, bit(i));
+      setFn(g, 8, size - 8, true);
+    };
+
+    for (let i = 0; i < size; i++) { setFn(grid, 6, i, i % 2 === 0); setFn(grid, i, 6, i % 2 === 0); }
+    const finder = (cx, cy) => {
+      for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) {
+        const x = cx + dx; const y = cy + dy;
+        if (x < 0 || y < 0 || x >= size || y >= size) continue;
+        const d = Math.max(Math.abs(dx), Math.abs(dy));
+        setFn(grid, x, y, d !== 2 && d !== 4);
+      }
+    };
+    finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+    const al = ALIGN[version];
+    for (let i = 0; i < al.length; i++) for (let j = 0; j < al.length; j++) {
+      if ((i === 0 && j === 0) || (i === 0 && j === al.length - 1) || (i === al.length - 1 && j === 0)) continue;
+      for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) setFn(grid, al[i] + dx, al[j] + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+    }
+    drawFormat(grid, 0);
+    if (version >= 7) {
+      let rem = version;
+      for (let i = 0; i < 12; i++) rem = (rem << 1) ^ ((rem >>> 11) * 0x1f25);
+      const vb = (version << 12) | rem;
+      for (let i = 0; i < 18; i++) {
+        const c = ((vb >>> i) & 1) !== 0;
+        const a = size - 11 + (i % 3);
+        const b = Math.floor(i / 3);
+        setFn(grid, a, b, c); setFn(grid, b, a, c);
+      }
+    }
+
+    let k = 0;
+    for (let right = size - 1; right >= 1; right -= 2) {
+      if (right === 6) right = 5;
+      for (let vert = 0; vert < size; vert++) {
+        for (let j = 0; j < 2; j++) {
+          const x = right - j;
+          const upward = ((right + 1) & 2) === 0;
+          const y = upward ? size - 1 - vert : vert;
+          if (!isFn[y][x] && k < out.length * 8) { grid[y][x] = ((out[k >>> 3] >>> (7 - (k & 7))) & 1) !== 0; k++; }
+        }
+      }
+    }
+
+    const penalty = (g) => {
+      let p = 0;
+      const lines = g.slice();
+      for (let x = 0; x < size; x++) lines.push(g.map((r) => r[x]));
+      for (const line of lines) {
+        let run = 1;
+        for (let i = 1; i <= size; i++) {
+          if (i < size && line[i] === line[i - 1]) run++;
+          else { if (run >= 5) p += 3 + (run - 5); run = 1; }
+        }
+        const s = line.map((c) => (c ? 1 : 0)).join("");
+        p += 40 * (s.match(/(?=10111010000|00001011101)/g) || []).length;
+      }
+      for (let y = 0; y < size - 1; y++) for (let x = 0; x < size - 1; x++) {
+        const c = g[y][x];
+        if (c === g[y][x + 1] && c === g[y + 1][x] && c === g[y + 1][x + 1]) p += 3;
+      }
+      const dark = g.reduce((a, r) => a + r.filter(Boolean).length, 0);
+      return p + Math.floor(Math.abs(dark * 20 - size * size * 10) / (size * size)) * 10;
+    };
+
+    let best = null;
+    let bestScore = Infinity;
+    for (let m = 0; m < 8; m++) {
+      const g = grid.map((r) => r.slice());
+      for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (!isFn[y][x] && MASKS[m](x, y)) g[y][x] = !g[y][x];
+      drawFormat(g, m);
+      const sc = penalty(g);
+      if (sc < bestScore) { bestScore = sc; best = g; }
+    }
+    return { size, version, dark: (x, y) => best[y][x] };
+  }
+  return { encode };
+})();
+/*QR-END*/
+
+// Mengecilkan foto di browser menjadi JPEG kecil (data URL) agar muat di database.
+async function imageToDataUrl(file, max, quality, square) {
+  if (!file || !String(file.type).startsWith("image/")) throw new Error("File bukan gambar");
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => {
+      const im = new Image();
+      im.onload = () => res(im);
+      im.onerror = () => rej(new Error("Gambar tidak bisa dibaca"));
+      im.src = url;
+    });
+    const w = img.naturalWidth;
+    const h = img.naturalHeight;
+    let sx = 0; let sy = 0; let sw = w; let sh = h; let dw; let dh;
+    if (square) {
+      const s = Math.min(w, h);
+      sx = (w - s) / 2; sy = (h - s) / 2; sw = s; sh = s;
+      dw = Math.min(max, s); dh = dw;
+    } else {
+      const k = Math.min(1, max / Math.max(w, h));
+      dw = Math.round(w * k); dh = Math.round(h * k);
+    }
+    const c = document.createElement("canvas");
+    c.width = dw; c.height = dh;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, dw, dh);
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, dw, dh);
+    return c.toDataURL("image/jpeg", quality);
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+/* ---------- Lapisan data: Firebase (produksi) atau lokal (demo) ---------- */
+function localBackend(note) {
+  const KEY = "demo_orders";
+  const subs = new Set();
+  const authSubs = new Set();
+  const msubs = new Set();
+  const MKEY = "demo_menu";
+  const SKEY = "demo_settings";
+  const ssubs = new Set();
+  const read = () => { try { return JSON.parse(store.get(KEY) || "[]"); } catch { return []; } };
+  const write = (a) => { store.set(KEY, JSON.stringify(a)); subs.forEach((f) => f()); };
+  window.addEventListener("storage", (e) => {
+    if (e.key === KEY) subs.forEach((f) => f());
+    if (e.key === MKEY) msubs.forEach((f) => f());
+    if (e.key === SKEY) ssubs.forEach((f) => f());
+  });
+  const authed = () => { try { return sessionStorage.getItem("demo_auth") === "1"; } catch { return false; } };
+  return {
+    mode: "demo", note,
+    async createOrder(o) {
+      const id = (crypto.randomUUID ? crypto.randomUUID().replace(/-/g, "").slice(0, 12) : Date.now().toString(36));
+      write([...read(), { ...o, id, createdAt: Date.now() }]);
+      return id;
+    },
+    watchOrder(id, cb) {
+      const f = () => cb(read().find((o) => o.id === id) || null);
+      subs.add(f); f();
+      return () => subs.delete(f);
+    },
+    watchOrders(cb) {
+      const f = () => cb(read().sort((a, b) => b.createdAt - a.createdAt));
+      subs.add(f); f();
+      return () => subs.delete(f);
+    },
+    async updateOrder(id, patch) { write(read().map((o) => (o.id === id ? { ...o, ...patch } : o))); },
+    watchMenu(cb) {
+      const f = () => { let m = null; try { m = JSON.parse(store.get(MKEY) || "null"); } catch { m = null; } cb(m); };
+      msubs.add(f); f();
+      return () => msubs.delete(f);
+    },
+    async saveMenu(categories) { store.set(MKEY, JSON.stringify(categories)); msubs.forEach((f) => f()); },
+    watchSettings(cb) {
+      const f = () => { let s = null; try { s = JSON.parse(store.get(SKEY) || "null"); } catch { s = null; } cb(s); };
+      ssubs.add(f); f();
+      return () => ssubs.delete(f);
+    },
+    async saveSettings(s) { store.set(SKEY, JSON.stringify(s)); ssubs.forEach((f) => f()); },
+    async login() { try { sessionStorage.setItem("demo_auth", "1"); } catch { /* abaikan */ } authSubs.forEach((f) => f(true)); },
+    async logout() { try { sessionStorage.removeItem("demo_auth"); } catch { /* abaikan */ } authSubs.forEach((f) => f(false)); },
+    onAuth(cb) { authSubs.add(cb); cb(authed()); return () => authSubs.delete(cb); }
+  };
+}
+
+async function createBackend() {
+  if (FIREBASE_CONFIG.apiKey.startsWith("ISI_")) {
+    return localBackend("MODE DEMO: data hanya tersimpan di browser ini. Isi FIREBASE_CONFIG agar pesanan masuk ke kasir lain.");
+  }
+  try {
+    const base = "https://www.gstatic.com/firebasejs/10.12.2/";
+    const [{ initializeApp }, fs, au] = await Promise.all([
+      import(base + "firebase-app.js"), import(base + "firebase-firestore.js"), import(base + "firebase-auth.js")
+    ]);
+    const app = initializeApp(FIREBASE_CONFIG);
+    const db = fs.getFirestore(app);
+    const auth = au.getAuth(app);
+    const col = fs.collection(db, "orders");
+    const withId = (d) => ({ id: d.id, ...d.data() });
+    return {
+      mode: "firebase", note: "",
+      async createOrder(o) { const ref = await fs.addDoc(col, { ...o, createdAt: fs.serverTimestamp() }); return ref.id; },
+      watchOrder(id, cb, onErr) {
+        return fs.onSnapshot(fs.doc(db, "orders", id), (s) => cb(s.exists() ? withId(s) : null), onErr);
+      },
+      watchOrders(cb, onErr) {
+        const q = fs.query(col, fs.orderBy("createdAt", "desc"), fs.limit(150));
+        return fs.onSnapshot(q, (s) => cb(s.docs.map(withId)), onErr);
+      },
+      updateOrder(id, patch) { return fs.updateDoc(fs.doc(db, "orders", id), patch); },
+      watchMenu(cb, onErr) {
+        return fs.onSnapshot(fs.doc(db, "config", "menu"), (s) => cb(s.exists() ? s.data().categories || null : null), onErr);
+      },
+      saveMenu(categories) { return fs.setDoc(fs.doc(db, "config", "menu"), { categories, updatedAt: fs.serverTimestamp() }); },
+      watchSettings(cb, onErr) {
+        return fs.onSnapshot(fs.doc(db, "config", "settings"), (s) => cb(s.exists() ? s.data() : null), onErr);
+      },
+      saveSettings(s) { return fs.setDoc(fs.doc(db, "config", "settings"), { ...s, updatedAt: fs.serverTimestamp() }); },
+      login(email, pass) { return au.signInWithEmailAndPassword(auth, email, pass); },
+      logout() { return au.signOut(auth); },
+      onAuth(cb) { return au.onAuthStateChanged(auth, (u) => cb(Boolean(u))); }
+    };
+  } catch (e) {
+    console.error("Firebase gagal dimuat:", e);
+    return localBackend("Gagal terhubung ke Firebase. Berjalan di MODE DEMO (data tidak dikirim ke kasir).");
+  }
+}
+
+const backend = await createBackend();
+if (backend.mode !== "demo") CAFE = { ...CAFE, bank: { name: "", number: "", holder: "" } };
+
+/* ----------------------------- Sisi pelanggan ----------------------------- */
+let MENU = [];
+let ALL = [];
+let ICON = {};
+let REC = [];
+
+function setMenu(cats) {
+  MENU = cats;
+  ALL = MENU.flatMap((g) => g.items.map((i) => ({ ...i, cat: g.cat })));
+  ICON = Object.fromEntries(MENU.map((g) => [g.cat, g.icon || "☕"]));
+  REC = ALL.filter((i) => i.tag && !i.soldOut);
+}
+
+// Membersihkan data menu (dari database atau editor) menjadi bentuk yang aman dipakai.
+function normalizeMenu(raw) {
+  if (!Array.isArray(raw)) return [];
+  const str = (v, n) => String(v ?? "").trim().slice(0, n);
+  return raw.map((g) => ({
+    cat: str(g && g.cat, 30),
+    icon: str(g && g.icon, 8) || "☕",
+    items: (Array.isArray(g && g.items) ? g.items : []).map((i) => {
+      const it = {
+        id: str(i && i.id, 30).replace(/[^\w-]/g, ""),
+        name: str(i && i.name, 60),
+        desc: str(i && i.desc, 120),
+        price: Math.max(0, Math.round(Number(i && i.price) || 0))
+      };
+      const tag = str(i && i.tag, 20);
+      if (tag) it.tag = tag;
+      const img = str(i && i.img, 40000);
+      if (img) it.img = img;
+      if (i && i.soldOut) it.soldOut = true;
+      return it;
+    }).filter((i) => i.id && i.name)
+  })).filter((g) => g.cat);
+}
+
+// Mengembalikan pesan kesalahan (string kosong jika menu valid dan boleh disimpan).
+function validateMenu(cats) {
+  if (!cats.length) return "Minimal ada 1 kategori.";
+  if (cats.reduce((a, g) => a + g.items.length, 0) > 150) return "Maksimal 150 menu.";
+  if (JSON.stringify(normalizeMenu(cats)).length > 900000) return "Ukuran menu terlalu besar. Hapus beberapa foto atau menu (belum tersimpan).";
+  const seen = new Set();
+  for (const g of cats) {
+    const name = String(g.cat || "").trim();
+    if (!name) return "Nama kategori tidak boleh kosong (belum tersimpan).";
+    if (name.toLowerCase() === "semua") return 'Nama "Semua" dipakai sistem, pakai nama lain (belum tersimpan).';
+    if (seen.has(name.toLowerCase())) return `Nama kategori "${name}" kembar, harus unik (belum tersimpan).`;
+    seen.add(name.toLowerCase());
+    for (const i of g.items) {
+      if (!String(i.name || "").trim()) return "Ada menu tanpa nama (belum tersimpan).";
+      if (!Number.isFinite(i.price) || i.price <= 0) return `Isi harga "${i.name}" dulu (belum tersimpan).`;
+    }
+  }
+  return "";
+}
+
+const newId = () => "m" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+setMenu(backend.mode === "demo" ? normalizeMenu(DEFAULT_MENU) : []);
+
+// Pengaturan cafe (nama, tagline, rekening, QRIS, status buka/tutup).
+function normalizeSettings(raw) {
+  const s = raw && typeof raw === "object" ? raw : {};
+  const str = (v, n) => String(v ?? "").trim().slice(0, n);
+  const qris = typeof s.qris === "string" && s.qris.startsWith("data:image/") && s.qris.length <= 250000 ? s.qris : "";
+  return {
+    name: str(s.name, 40), tagline: str(s.tagline, 80),
+    bankName: str(s.bankName, 30), bankNumber: str(s.bankNumber, 30), bankHolder: str(s.bankHolder, 40),
+    qris, open: s.open !== false
+  };
+}
+
+function applySettings(raw) {
+  const s = normalizeSettings(raw);
+  const demo = backend.mode === "demo";
+  CAFE = {
+    ...CAFE_DEFAULT,
+    name: s.name || CAFE_DEFAULT.name,
+    tagline: s.tagline || CAFE_DEFAULT.tagline,
+    bank: {
+      name: s.bankName || (demo ? CAFE_DEFAULT.bank.name : ""),
+      number: s.bankNumber || (demo ? CAFE_DEFAULT.bank.number : ""),
+      holder: s.bankHolder || (demo ? CAFE_DEFAULT.bank.holder : "")
+    },
+    qris: s.qris,
+    open: s.open
+  };
+  refreshBrand();
+}
+
+// Metode bayar yang boleh dipilih pelanggan, sesuai data yang sudah diisi kasir.
+const methodAvailable = (k) => k === "cash"
+  || (k === "qris" && Boolean(CAFE.qris || backend.mode === "demo"))
+  || (k === "transfer" && Boolean(CAFE.bank.number));
+const A = { cart: {}, cat: "Semua", unsub: null, who: "", tbl: "", menuLoaded: false, menuError: false };
+const cartLines = () => ALL.filter((i) => A.cart[i.id]).map((i) => ({ id: i.id, name: i.name, price: i.price, qty: A.cart[i.id] }));
+const sumOf = (l) => l.reduce((a, i) => a + i.price * i.qty, 0);
+const ov = $("#ov");
+const closeOv = () => { ov.hidden = true; ov.innerHTML = ""; delete ov.dataset.kind; };
+
+const demoNote = () => (backend.note ? `<div class="banner">${esc(backend.note)}</div>` : "");
+function bannerHtml() {
+  return demoNote() + (CAFE.open ? "" : `<div class="banner">Maaf, pesanan online sedang ditutup. Silakan pesan langsung ke kasir.</div>`);
+}
+
+let brandReady = false;
+function refreshBrand() {
+  if (brandReady) {
+    $("#nm").textContent = CAFE.name;
+    $("#tg").textContent = CAFE.tagline;
+  }
+  $("#banner").innerHTML = bannerHtml();
+  if (!location.hash.startsWith("#/kasir")) document.title = brandReady ? "Menu - " + CAFE.name : "Menu";
+  renderBar();
+}
+
+function thumbHtml(i) {
+  const ic = ICON[i.cat] || "☕";
+  return i.img
+    ? `<img class="ph" src="${esc(i.img)}" alt="${esc(i.name)}" loading="lazy" width="64" height="64" data-ic="${esc(ic)}">`
+    : `<div class="ph ph-ic">${ic}</div>`;
+}
+
+function itemHtml(i) {
+  const n = A.cart[i.id] || 0;
+  const ctrl = i.soldOut ? `<span class="desc">Habis</span>`
+    : n === 0 ? `<div class="qty"><button class="add" data-id="${i.id}" data-d="1" aria-label="Tambah ${esc(i.name)}">+</button></div>`
+    : `<div class="qty"><button data-id="${i.id}" data-d="-1" aria-label="Kurangi">−</button><span>${n}</span><button class="add" data-id="${i.id}" data-d="1" aria-label="Tambah">+</button></div>`;
+  return `<div class="item ${i.soldOut ? "out" : ""}">${thumbHtml(i)}<div class="ibody"><div class="name">${esc(i.name)}</div><div class="desc">${esc(i.desc)}</div><div class="price">${rp(i.price)}</div></div>${ctrl}</div>`;
+}
+
+function slideHtml(i) {
+  const art = i.img ? `<img src="${esc(i.img)}" alt="${esc(i.name)}" data-ic="${esc(ICON[i.cat] || "☕")}">` : (ICON[i.cat] || "☕");
+  return `<div class="slide"><div><span class="badge">${esc(i.tag)}</span><div class="sl-n">${esc(i.name)}</div><div class="sl-p">${rp(i.price)}</div><button class="btn" data-order="${i.id}">Order now</button></div><div class="sl-a">${art}</div></div>`;
+}
+
+function renderCarousel() {
+  const car = $("#car");
+  car.hidden = REC.length === 0;
+  car.innerHTML = REC.map(slideHtml).join("");
+}
+
+function applyMenu(cats) {
+  setMenu(cats);
+  for (const id of Object.keys(A.cart)) {
+    const it = ALL.find((i) => i.id === id);
+    if (!it || it.soldOut) delete A.cart[id];
+  }
+  if (A.cat !== "Semua" && !MENU.some((g) => g.cat === A.cat)) A.cat = "Semua";
+  renderCarousel();
+  renderMenu();
+}
+
+function startCarousel() {
+  const car = $("#car");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let idx = 0;
+  let pauseUntil = 0;
+  const hold = () => { pauseUntil = Date.now() + 6000; };
+  car.addEventListener("touchstart", hold, { passive: true });
+  car.addEventListener("pointerdown", hold);
+  car.addEventListener("scroll", () => {
+    if (car.children.length < 2) return;
+    const w = car.children[1].offsetLeft - car.children[0].offsetLeft;
+    idx = Math.round(car.scrollLeft / w);
+  }, { passive: true });
+  setInterval(() => {
+    if (document.hidden || Date.now() < pauseUntil || REC.length < 2 || car.children.length < 2) return;
+    idx = (idx + 1) % car.children.length;
+    car.scrollTo({ left: car.children[idx].offsetLeft - car.children[0].offsetLeft, behavior: "smooth" });
+  }, 3500);
+}
+
+function renderCats() {
+  if (!MENU.length) { $("#cats").innerHTML = ""; return; }
+  const cats = [{ id: "Semua", label: "Semua kategori", icon: "🍽️" }, ...MENU.map((g) => ({ id: g.cat, label: g.cat, icon: g.icon || "☕" }))];
+  $("#cats").innerHTML = cats.map((c) => `<button class="cat ${c.id === A.cat ? "on" : ""}" data-cat="${esc(c.id)}"><span class="ic">${c.icon}</span><span>${esc(c.label)}</span></button>`).join("");
+}
+
+function renderList() {
+  if (!MENU.length) {
+    $("#list").innerHTML = `<div class="empty">${A.menuError ? "Menu gagal dimuat. Periksa koneksi internet lalu muat ulang halaman." : A.menuLoaded ? "Menu belum tersedia. Silakan hubungi kasir." : "Memuat menu..."}</div>`;
+    return;
+  }
+  const groups = MENU.filter((g) => A.cat === "Semua" || g.cat === A.cat);
+  $("#list").innerHTML = groups.map((g) => `<h2>${esc(g.cat)}</h2>` + g.items.map((i) => itemHtml({ ...i, cat: g.cat })).join("")).join("");
+}
+
+let lastCount = 0;
+function renderBar() {
+  const lines = cartLines();
+  const count = lines.reduce((a, i) => a + i.qty, 0);
+  $("#cnt").textContent = count + "x Pesanan";
+  $("#tot").textContent = rp(sumOf(lines));
+  $("#go").disabled = count === 0 || !CAFE.open;
+  $("#cartBtn").disabled = count === 0 || !CAFE.open;
+  $(".bar").classList.toggle("hide", count === 0);
+  const cn = $("#cartN");
+  cn.hidden = count === 0;
+  cn.textContent = String(count);
+  if (count > 0 && count !== lastCount) {
+    for (const el of [cn, $("#cartBtn")]) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
+  }
+  lastCount = count;
+}
+
+function renderMenu() { renderCats(); renderList(); renderBar(); }
+
+function openCheckout() {
+  const lines = cartLines();
+  if (!lines.length || !CAFE.open) return;
+  const count = lines.reduce((a, i) => a + i.qty, 0);
+  ov.dataset.kind = "checkout";
+  ov.hidden = false;
+  ov.innerHTML = `<div class="sheet">
+    <div class="grab"></div>
+    <button class="link" data-x="back">← Kembali ke menu</button>
+    <h2 style="margin-top:6px">Ringkasan Pesanan</h2>
+    <div class="frow">
+      <label class="f grow">Atas Nama<input id="coName" type="text" maxlength="40" placeholder="Nama kamu (wajib)" autocomplete="name" value="${esc(A.who)}"></label>
+      <label class="f meja">Meja<input id="coTbl" type="text" maxlength="6" placeholder="No." inputmode="numeric" value="${esc(A.tbl)}"></label>
+    </div>
+    <div class="card receipt"><div class="rc-top"><b>${esc(CAFE.name)}</b><span>${count} item</span></div>
+      ${lines.map((i) => `<div class="ln"><span>${i.qty}× ${esc(i.name)}</span><span>${rp(i.price * i.qty)}</span></div>`).join("")}
+      <div class="ln tot"><span>Total</span><span>${rp(sumOf(lines))}</span></div></div>
+    <h2>Metode Pembayaran</h2>
+    ${Object.entries(METHODS).filter(([k]) => methodAvailable(k)).map(([k, v], idx) => `<label class="opt"><input type="radio" name="m" value="${k}" ${idx === 0 ? "checked" : ""}><span class="oi">${MICON[k] || "💳"}</span><span class="ot"><b>${esc(v)}</b></span></label>`).join("")}
+    <div class="err" id="coErr"></div>
+    <button class="btn full" id="submit">Proses Pesanan</button>
+  </div>`;
+}
+
+async function submitOrder() {
+  const btn = $("#submit");
+  const err = $("#coErr");
+  err.textContent = "";
+  const name = $("#coName").value.trim();
+  const lines = cartLines();
+  const checked = $('input[name="m"]:checked');
+  const method = checked ? checked.value : "";
+  if (!name) { err.textContent = "Isi nama kamu dulu ya."; $("#coName").focus(); return; }
+  if (!CAFE.open) { err.textContent = "Maaf, pesanan sedang ditutup."; return; }
+  if (!lines.length || !METHODS[method] || !methodAvailable(method)) { err.textContent = "Data pesanan belum lengkap."; return; }
+  btn.disabled = true;
+  btn.textContent = "Mengirim...";
+  try {
+    const id = await backend.createOrder({ name, table: $("#coTbl").value.trim(), items: lines, total: sumOf(lines), method, status: "baru", paid: false });
+    store.set("lastOrder", id);
+    store.set("who", name);
+    A.cart = {};
+    renderMenu();
+    showStatus(id);
+  } catch (e) {
+    console.error(e);
+    err.textContent = "Gagal mengirim pesanan. Cek koneksi lalu coba lagi.";
+    btn.disabled = false;
+    btn.textContent = "Proses Pesanan";
+  }
+}
+
+function payHtml(o) {
+  if (o.status === "batal") return "";
+  if (o.paid) return `<div class="box ok">✅ Pembayaran sudah dikonfirmasi kasir. Terima kasih!</div>`;
+  if (o.method === "qris") {
+    return `<div class="box"><b>Bayar dengan QRIS</b><div class="muted">Scan kode di bawah, nominal ${rp(o.total)}. Kasir akan konfirmasi setelah masuk.</div>
+      <img class="qris" src="${esc(CAFE.qris || CAFE.qrisImage)}" alt="Kode QRIS"></div>`;
+  }
+  if (o.method === "transfer") {
+    return `<div class="box"><b>Transfer ke ${esc(CAFE.bank.name)}</b>
+      <div class="ln"><span>No. rekening</span><b>${esc(CAFE.bank.number)}</b></div>
+      <div class="ln"><span>Atas nama</span><span>${esc(CAFE.bank.holder)}</span></div>
+      <div class="ln"><span>Nominal</span><b>${rp(o.total)}</b></div>
+      <button class="btn sm ghost" data-copy="${esc(CAFE.bank.number)}">Salin no. rekening</button>
+      <div class="muted" style="margin-top:8px">Tunjukkan bukti transfer ke kasir jika diminta.</div></div>`;
+  }
+  return `<div class="box"><b>Bayar tunai di kasir</b><div class="muted">Siapkan ${rp(o.total)} dan sebutkan nama kamu.</div></div>`;
+}
+
+function statusHtml(o) {
+  const st = o.status || "baru";
+  const code = String(o.id).slice(-4).toUpperCase();
+  return `<div class="sheet">
+    <div class="grab"></div>
+    <h2 style="margin-top:6px">Pesanan #${esc(code)}</h2>
+    <span class="pill ${st === "batal" ? "bad" : st === "selesai" ? "ok" : "warn"}">${esc(STATUS[st] || st)}</span>
+    <span class="pill ${o.paid ? "ok" : "warn"}">${o.paid ? "Lunas" : "Belum dibayar"}</span>
+    <p class="muted">a.n. ${esc(o.name)}${o.table ? ` • Meja ${esc(o.table)}` : ""} • ${esc(METHODS[o.method] || o.method)}</p>
+    <div class="card receipt"><div class="rc-top"><b>${esc(CAFE.name)}</b><span>${hhmm(o.createdAt)}</span></div>
+      ${(o.items || []).map((i) => `<div class="ln"><span>${i.qty}× ${esc(i.name)}</span><span>${rp(i.price * i.qty)}</span></div>`).join("")}
+      <div class="ln tot"><span>Total</span><span>${rp(o.total)}</span></div></div>
+    ${payHtml(o)}
+    <button class="btn full ghost" data-x="again">Pesan lagi</button>
+  </div>`;
+}
+
+function showStatus(id) {
+  if (A.unsub) A.unsub();
+  ov.dataset.kind = "status";
+  ov.hidden = false;
+  ov.innerHTML = `<div class="sheet"><div class="grab"></div><div class="empty">Memuat pesanan...</div></div>`;
+  A.unsub = backend.watchOrder(id, (o) => {
+    if (!o) { store.del("lastOrder"); closeOv(); return; }
+    ov.innerHTML = statusHtml(o);
+  }, () => { ov.innerHTML = `<div class="sheet"><div class="grab"></div><div class="empty">Gagal memuat status pesanan.</div><button class="btn full ghost" data-x="again">Kembali ke menu</button></div>`; });
+}
+
+function initCustomer() {
+  backend.watchSettings((raw) => { brandReady = true; applySettings(raw); }, (e) => { console.error("Pengaturan gagal dimuat:", e); brandReady = true; refreshBrand(); });
+  setTimeout(() => { if (!brandReady) { brandReady = true; refreshBrand(); } }, 1500);
+  A.who = store.get("who") || "";
+  A.tbl = (new URLSearchParams(location.search).get("meja") || "").replace(/[^\w-]/g, "").slice(0, 6);
+  $("#cats").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-cat]");
+    if (!b) return;
+    A.cat = b.dataset.cat;
+    renderCats();
+    renderList();
+    $("#list").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  $("#list").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-id]");
+    if (!b) return;
+    const next = Math.max(0, (A.cart[b.dataset.id] || 0) + Number(b.dataset.d));
+    if (next) A.cart[b.dataset.id] = next; else delete A.cart[b.dataset.id];
+    renderList();
+    renderBar();
+  });
+  $("#car").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-order]");
+    if (!b || !CAFE.open) return;
+    A.cart[b.dataset.order] = (A.cart[b.dataset.order] || 0) + 1;
+    renderList();
+    renderBar();
+    openCheckout();
+  });
+  document.addEventListener("load", (e) => {
+    const t = e.target;
+    if (t && t.tagName === "IMG" && t.classList.contains("ph")) t.classList.add("ok");
+  }, true);
+  document.addEventListener("error", (e) => {
+    const t = e.target;
+    if (t && t.tagName === "IMG" && t.dataset && t.dataset.ic) {
+      const d = document.createElement("div");
+      d.className = t.classList.contains("ph") ? "ph ph-ic" : "";
+      d.textContent = t.dataset.ic;
+      t.replaceWith(d);
+    }
+  }, true);
+  $("#go").addEventListener("click", openCheckout);
+  $("#cartBtn").addEventListener("click", openCheckout);
+  ov.addEventListener("input", (e) => {
+    if (e.target.id === "coName") A.who = e.target.value;
+    if (e.target.id === "coTbl") A.tbl = e.target.value;
+  });
+  ov.addEventListener("click", async (e) => {
+    if (e.target === ov) { if (ov.dataset.kind === "checkout") closeOv(); return; }
+    if (e.target.id === "submit") { submitOrder(); return; }
+    const x = e.target.closest("[data-x]");
+    if (x && x.dataset.x === "back") closeOv();
+    if (x && x.dataset.x === "again") { if (A.unsub) A.unsub(); A.unsub = null; store.del("lastOrder"); closeOv(); }
+    const c = e.target.closest("[data-copy]");
+    if (c) {
+      try { await navigator.clipboard.writeText(c.dataset.copy); c.textContent = "Tersalin ✓"; } catch { c.textContent = c.dataset.copy; }
+    }
+  });
+  ov.addEventListener("error", (e) => {
+    if (e.target && e.target.classList && e.target.classList.contains("qris")) {
+      e.target.replaceWith(Object.assign(document.createElement("div"), { className: "muted", textContent: "Gambar QRIS belum dipasang. Mohon minta bantuan kasir." }));
+    }
+  }, true);
+  renderCarousel();
+  renderMenu();
+  startCarousel();
+  backend.watchMenu((cats) => {
+    const m = normalizeMenu(cats);
+    A.menuLoaded = true;
+    A.menuError = false;
+    if (m.length) applyMenu(m);
+    else applyMenu(backend.mode === "demo" ? normalizeMenu(DEFAULT_MENU) : []);
+  }, (e) => { console.error("Menu gagal dimuat:", e); A.menuLoaded = true; A.menuError = true; applyMenu([]); });
+  const last = store.get("lastOrder");
+  if (last) showStatus(last);
+}
+
+/* ------------------------------- Sisi kasir ------------------------------- */
+const K = {
+  orders: [], tab: "aktif", sound: true, seen: null, unsub: null, authed: false, error: "",
+  menu: [], menuUnsub: null, editId: "", settings: normalizeSettings(null), setUnsub: null, stQris: "",
+  qr: { base: "", n: 10 }
+};
+const kasir = $("#kasir");
+const EDIT_TABS = ["menu", "pengaturan", "qr"];
+const MENU_ACTS = ["edit", "sold", "delitem", "additem", "delcat", "addcat", "delphoto"];
+
+function beep() {
+  if (!K.sound) return;
+  try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch { /* getar tidak didukung */ }
+  try {
+    const c = new (window.AudioContext || window.webkitAudioContext)();
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.frequency.value = 880; g.gain.value = 0.15;
+    o.start();
+    setTimeout(() => { o.stop(); c.close(); }, 350);
+  } catch { /* audio tidak tersedia */ }
+}
+
+// Menjaga layar kasir tetap menyala selama halaman kasir terbuka.
+let wakeLock = null;
+async function keepAwake() {
+  try {
+    if (!("wakeLock" in navigator) || document.visibilityState !== "visible" || wakeLock) return;
+    wakeLock = await navigator.wakeLock.request("screen");
+    wakeLock.addEventListener("release", () => { wakeLock = null; });
+  } catch { wakeLock = null; }
+}
+document.addEventListener("visibilitychange", () => { if (K.authed) keepAwake(); });
+
+function updateKasirTitle() {
+  const n = K.orders.filter((o) => o.status === "baru").length;
+  document.title = (n ? `(${n}) ` : "") + "Kasir - " + CAFE.name;
+}
+
+function updateOpenChip() {
+  const el = $("#openChip");
+  if (el) el.textContent = CAFE.open ? "🟢 Buka" : "🔴 Tutup";
+}
+
+function setMstat(text, bad = false) {
+  const el = $("#mstat");
+  if (!el) return;
+  el.textContent = text;
+  el.className = "mstat" + (bad ? " bad" : "");
+}
+
+/* ---- Editor menu ---- */
+async function saveMenuNow() {
+  const err = validateMenu(K.menu);
+  if (err) { setMstat(err, true); return false; }
+  setMstat("Menyimpan...");
+  try {
+    await backend.saveMenu(normalizeMenu(K.menu));
+    setMstat("Tersimpan ✓");
+    return true;
+  } catch (e) {
+    console.error(e);
+    setMstat("Gagal menyimpan. Cek koneksi lalu coba lagi.", true);
+    return false;
+  }
+}
+
+function itemEditorHtml(it, gi, ii) {
+  const open = K.editId === it.id;
+  const head = `<div class="mrow"><div class="mname"><b>${esc(it.name || "(tanpa nama)")}</b><span class="muted">${rp(it.price || 0)}</span></div>
+    <button class="btn sm ${it.soldOut ? "bad" : "ghost"}" data-act="sold" data-g="${gi}" data-i="${ii}">${it.soldOut ? "Habis" : "Tersedia"}</button>
+    <button class="btn sm ghost" data-act="edit" data-id="${esc(it.id)}">${open ? "Tutup" : "Edit"}</button></div>`;
+  if (!open) return `<div class="card mi">${head}</div>`;
+  const fld = (label, f, val, extra = "") => `<label class="f">${label}<input type="text" value="${esc(val ?? "")}" data-g="${gi}" data-i="${ii}" data-f="${f}" ${extra}></label>`;
+  const photo = it.img ? `<img class="ph ok" src="${esc(it.img)}" alt="">` : `<div class="ph ph-ic">📷</div>`;
+  return `<div class="card mi">${head}<div class="mfields">
+    ${fld("Nama menu", "name", it.name, 'maxlength="60"')}
+    <div class="frow">${fld("Harga (Rp)", "price", Number.isFinite(it.price) ? it.price : "", 'inputmode="numeric" maxlength="9"')}${fld("Label (opsional)", "tag", it.tag, 'maxlength="20" placeholder="Best Seller"')}</div>
+    ${fld("Deskripsi", "desc", it.desc, 'maxlength="120"')}
+    <div class="f">Foto (opsional)<div class="photo-row">${photo}
+      <label class="btn sm ghost">${it.img ? "Ganti foto" : "Pilih foto"}<input type="file" accept="image/*" hidden data-g="${gi}" data-i="${ii}" data-f="photo"></label>
+      ${it.img ? `<button class="btn sm bad" data-act="delphoto" data-g="${gi}" data-i="${ii}">Hapus foto</button>` : ""}</div></div>
+    <button class="btn sm bad" data-act="delitem" data-g="${gi}" data-i="${ii}">Hapus menu</button></div></div>`;
+}
+
+function menuEditorHtml() {
+  return `<div class="muted" style="margin-bottom:8px">Ubah harga, nama, foto, atau tandai menu habis. Perubahan langsung tampil di menu pelanggan. Label "Best Seller" membuat menu masuk banner.</div>
+    <div class="mstat" id="mstat" role="status"></div>
+    ${K.menu.map((g, gi) => `<div class="mcat"><div class="mhead">
+      <input class="mi-icon" type="text" maxlength="8" value="${esc(g.icon)}" data-g="${gi}" data-f="icon" aria-label="Ikon kategori">
+      <input type="text" maxlength="30" value="${esc(g.cat)}" data-g="${gi}" data-f="cat" aria-label="Nama kategori">
+      <button class="btn sm bad" data-act="delcat" data-g="${gi}">Hapus</button></div>
+      ${g.items.map((it, ii) => itemEditorHtml(it, gi, ii)).join("")}
+      <button class="btn sm ghost" style="margin-top:10px" data-act="additem" data-g="${gi}">+ Tambah menu</button></div>`).join("")}
+    <button class="btn full ghost" data-act="addcat">+ Tambah kategori</button>`;
+}
+
+async function menuAction(act, d) {
+  if (act === "edit") { K.editId = K.editId === d.id ? "" : d.id; renderKasir(); return; }
+  if (act === "addcat") {
+    K.menu.push({ cat: "Kategori Baru", icon: "🍽️", items: [] });
+    renderKasir();
+    await saveMenuNow();
+    return;
+  }
+  const gi = Number(d.g);
+  const g = K.menu[gi];
+  if (!g) return;
+  const ii = Number(d.i);
+  if (act === "delcat") {
+    if (!confirm(`Hapus kategori "${g.cat}" beserta semua menunya?`)) return;
+    K.menu.splice(gi, 1);
+  } else if (act === "additem") {
+    const id = newId();
+    g.items.push({ id, name: "Menu baru", desc: "", price: 0 });
+    K.editId = id;
+  } else if (act === "delitem") {
+    const it = g.items[ii];
+    if (!it || !confirm(`Hapus menu "${it.name}"?`)) return;
+    g.items.splice(ii, 1);
+  } else if (act === "sold") {
+    const it = g.items[ii];
+    if (!it) return;
+    if (it.soldOut) delete it.soldOut; else it.soldOut = true;
+  } else if (act === "delphoto") {
+    const it = g.items[ii];
+    if (!it) return;
+    delete it.img;
+  }
+  renderKasir();
+  await saveMenuNow();
+}
+
+async function onPhotoPicked(el) {
+  const file = el.files && el.files[0];
+  if (!file) return;
+  const it = K.menu[Number(el.dataset.g)]?.items[Number(el.dataset.i)];
+  if (!it) return;
+  setMstat("Memproses foto...");
+  try {
+    let q = 0.72;
+    let url = await imageToDataUrl(file, 224, q, true);
+    while (url.length > 40000 && q > 0.4) { q -= 0.12; url = await imageToDataUrl(file, 224, q, true); }
+    if (url.length > 40000) throw new Error("Foto terlalu besar");
+    it.img = url;
+    renderKasir();
+    await saveMenuNow();
+  } catch (e) {
+    console.error(e);
+    setMstat("Foto gagal diproses. Coba foto lain.", true);
+  }
+}
+
+function onMenuFieldChange(e) {
+  const el = e.target;
+  if (!el.dataset || !el.dataset.f) return;
+  const g = K.menu[Number(el.dataset.g)];
+  if (!g) return;
+  const f = el.dataset.f;
+  if (f === "photo") { onPhotoPicked(el); return; }
+  if (f === "cat" || f === "icon") {
+    g[f] = el.value;
+  } else {
+    const it = g.items[Number(el.dataset.i)];
+    if (!it) return;
+    const v = el.value.trim();
+    if (f === "price") { const digits = v.replace(/[^\d]/g, ""); it.price = digits === "" ? NaN : Number(digits); }
+    else if (f === "tag") { if (v) it.tag = v; else delete it.tag; }
+    else it[f] = el.value;
+    const card = el.closest(".mi");
+    if (card) {
+      card.querySelector(".mname b").textContent = it.name || "(tanpa nama)";
+      card.querySelector(".mname span").textContent = rp(Number.isFinite(it.price) ? it.price : 0);
+    }
+  }
+  saveMenuNow();
+}
+
+function onMenuSnapshot(cats) {
+  const incoming = normalizeMenu(cats);
+  if (!incoming.length) return;
+  if (JSON.stringify(incoming) === JSON.stringify(normalizeMenu(K.menu))) return;
+  const ae = document.activeElement;
+  if (K.tab === "menu" && ae && ae.tagName === "INPUT" && kasir.contains(ae)) return;
+  K.menu = incoming;
+  if (K.tab === "menu") renderKasir();
+}
+
+/* ---- Pengaturan cafe ---- */
+function settingsHtml() {
+  const s = K.settings;
+  return `<div class="muted" style="margin-bottom:8px">Data ini tampil di halaman pelanggan. Transfer Bank hanya muncul jika nomor rekening diisi, dan QRIS hanya muncul jika gambar QRIS diunggah.</div>
+    <div class="mfields">
+      <label class="f">Nama cafe<input id="stName" type="text" maxlength="40" value="${esc(s.name || CAFE.name)}"></label>
+      <label class="f">Tagline<input id="stTag" type="text" maxlength="80" value="${esc(s.tagline)}" placeholder="${esc(CAFE_DEFAULT.tagline)}"></label>
+      <h2 style="margin:6px 0 0">Transfer Bank</h2>
+      <div class="frow">
+        <label class="f">Bank<input id="stBank" type="text" maxlength="30" value="${esc(s.bankName)}" placeholder="BCA"></label>
+        <label class="f">No. rekening<input id="stNo" type="text" inputmode="numeric" maxlength="30" value="${esc(s.bankNumber)}"></label>
+      </div>
+      <label class="f">Atas nama<input id="stHolder" type="text" maxlength="40" value="${esc(s.bankHolder)}"></label>
+      <h2 style="margin:6px 0 0">QRIS</h2>
+      <div class="muted">Unggah foto atau screenshot QRIS cafe. Pelanggan membayar dengan memindai gambar ini.</div>
+      <img id="qrisPrev" class="qprev" alt="QRIS" ${K.stQris ? `src="${esc(K.stQris)}"` : "hidden"}>
+      <div class="photo-row">
+        <label class="btn sm ghost">Pilih gambar QRIS<input id="stQrisFile" type="file" accept="image/*" hidden></label>
+        <button class="btn sm bad" data-act="delqris">Hapus QRIS</button>
+      </div>
+      <div class="mstat" id="mstat" role="status"></div>
+      <button class="btn full" data-act="savesettings">Simpan pengaturan</button>
+    </div>`;
+}
+
+async function onQrisPicked(el) {
+  const file = el.files && el.files[0];
+  if (!file) return;
+  setMstat("Memproses gambar QRIS...");
+  try {
+    let q = 0.92;
+    let url = await imageToDataUrl(file, 720, q, false);
+    while (url.length > 200000 && q > 0.5) { q -= 0.1; url = await imageToDataUrl(file, 720, q, false); }
+    if (url.length > 200000) throw new Error("Gambar terlalu besar");
+    K.stQris = url;
+    const prev = $("#qrisPrev");
+    if (prev) { prev.src = url; prev.hidden = false; }
+    setMstat("Gambar QRIS siap. Klik Simpan pengaturan.");
+  } catch (e) {
+    console.error(e);
+    setMstat("Gambar QRIS gagal diproses. Coba gambar lain.", true);
+  }
+}
+
+async function saveSettingsNow() {
+  const name = $("#stName").value.trim();
+  if (!name) { setMstat("Nama cafe tidak boleh kosong.", true); return; }
+  const next = normalizeSettings({
+    ...K.settings, name, tagline: $("#stTag").value, bankName: $("#stBank").value,
+    bankNumber: $("#stNo").value, bankHolder: $("#stHolder").value, qris: K.stQris
+  });
+  setMstat("Menyimpan...");
+  try {
+    await backend.saveSettings(next);
+    K.settings = next;
+    applySettings(next);
+    updateOpenChip();
+    updateKasirTitle();
+    setMstat("Tersimpan ✓");
+  } catch (e) {
+    console.error(e);
+    setMstat("Gagal menyimpan. Cek koneksi lalu coba lagi.", true);
+  }
+}
+
+function onSettingsSnapshot(raw) {
+  K.settings = normalizeSettings(raw);
+  applySettings(raw);
+  updateKasirTitle();
+  if (EDIT_TABS.includes(K.tab)) updateOpenChip(); else renderKasir();
+}
+
+/* ---- QR meja ---- */
+const tableUrl = (base, n) => base + (base.includes("?") ? "&" : "?") + "meja=" + n;
+
+function qrSvg(text) {
+  const q = QR.encode(text);
+  let d = "";
+  for (let y = 0; y < q.size; y++) for (let x = 0; x < q.size; x++) if (q.dark(x, y)) d += `M${x} ${y}h1v1h-1z`;
+  const box = q.size + 8;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -4 ${box} ${box}" shape-rendering="crispEdges" role="img" aria-label="QR code"><rect x="-4" y="-4" width="${box}" height="${box}" fill="#fff"/><path d="${d}" fill="#000"/></svg>`;
+}
+
+function qrHtml() {
+  if (!K.qr.base) K.qr.base = location.href.split("#")[0].split("?")[0];
+  let cards = "";
+  let err = "";
+  try {
+    for (let n = 1; n <= K.qr.n; n++) {
+      cards += `<div class="qrc"><div class="qrt">${esc(CAFE.name)}</div>${qrSvg(tableUrl(K.qr.base, n))}<div class="qrm">Meja ${n}</div><div class="qrs">Scan untuk pesan</div></div>`;
+    }
+  } catch (e) { err = e.message; cards = ""; }
+  return `<div class="noprint">
+      <div class="muted" style="margin-bottom:8px">Isi alamat web cafe (setelah di-deploy) dan jumlah meja. Tiap meja mendapat QR sendiri dengan nomor meja terisi otomatis. Cetak langsung atau simpan sebagai PDF.</div>
+      <div class="mfields">
+        <label class="f">Alamat web<input id="qrBase" type="text" value="${esc(K.qr.base)}"></label>
+        <div class="frow">
+          <label class="f">Jumlah meja<input id="qrN" type="text" inputmode="numeric" maxlength="2" value="${K.qr.n}"></label>
+          <button class="btn sm" style="align-self:flex-end;height:46px" data-act="qrgen">Buat QR</button>
+          <button class="btn sm ghost" style="align-self:flex-end;height:46px" data-act="print">Cetak</button>
+        </div>
+        <div class="mstat${err ? " bad" : ""}" id="mstat" role="status">${esc(err)}</div>
+      </div>
+    </div>
+    <div class="qrgrid">${cards}</div>`;
+}
+
+/* ---- Tampilan utama kasir ---- */
+function renderLogin(msg = "") {
+  kasir.innerHTML = `<div class="wrap"><header><h1>Kasir</h1><div class="tag">${esc(CAFE.name)}</div>${demoNote()}</header>
+    <form id="lf"><div class="row"><input id="em" type="email" placeholder="Email kasir" autocomplete="username" required></div>
+    <div class="row"><input id="pw" type="password" placeholder="Password" autocomplete="current-password" required></div>
+    <div class="err" id="lerr">${esc(msg)}</div><button class="btn full" type="submit">Masuk</button></form></div>`;
+}
+
+function renderKasir() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const aktif = K.orders.filter((o) => o.status === "baru" || o.status === "diproses");
+  const unpaid = aktif.filter((o) => !o.paid).length;
+  const omzet = K.orders.filter((o) => o.paid && o.status !== "batal" && ms(o.createdAt) >= today.getTime()).reduce((a, o) => a + (o.total || 0), 0);
+  let shown = K.orders;
+  if (K.tab === "aktif") shown = [...aktif].reverse();
+  if (K.tab === "riwayat") shown = K.orders.filter((o) => o.status === "selesai" || o.status === "batal");
+  const card = (o) => {
+    const st = o.status || "baru";
+    const final = st === "selesai" || st === "batal";
+    return `<div class="card"><div class="ohead"><span>#${esc(String(o.id).slice(-4).toUpperCase())} · ${esc(o.name)}${o.table ? ` · Meja ${esc(o.table)}` : ""}</span><span class="muted">${hhmm(o.createdAt)}</span></div>
+      <div style="margin:6px 0">${(o.items || []).map((i) => `<div class="ln"><span>${i.qty}× ${esc(i.name)}</span><span>${rp(i.price * i.qty)}</span></div>`).join("")}<div class="ln tot"><span>Total</span><span>${rp(o.total)}</span></div></div>
+      <span class="pill ${st === "batal" ? "bad" : st === "selesai" ? "ok" : "warn"}">${esc(STATUS[st] || st)}</span>
+      <span class="pill ${o.paid ? "ok" : "bad"}">${o.paid ? "Lunas" : "Belum bayar"}</span>
+      <span class="pill ok" style="background:var(--chip);color:var(--text)">${esc(METHODS[o.method] || o.method)}</span>
+      ${final ? "" : `<div class="acts">
+        ${o.paid ? "" : `<button class="btn sm" data-act="lunas" data-id="${esc(o.id)}">Tandai Lunas</button>`}
+        ${st === "baru" ? `<button class="btn sm ghost" data-act="proses" data-id="${esc(o.id)}">Proses</button>` : ""}
+        ${st === "diproses" ? `<button class="btn sm ghost" data-act="selesai" data-id="${esc(o.id)}">Selesai</button>` : ""}
+        <button class="btn sm bad" data-act="batal" data-id="${esc(o.id)}">Batalkan</button></div>`}</div>`;
+  };
+  const tab = (k, l) => `<button class="chip ${K.tab === k ? "on" : ""}" data-act="tab" data-tab="${k}">${l}</button>`;
+  const np = K.tab === "qr" ? " noprint" : "";
+  let body;
+  if (K.tab === "menu") body = menuEditorHtml();
+  else if (K.tab === "pengaturan") body = settingsHtml();
+  else if (K.tab === "qr") body = qrHtml();
+  else body = shown.length ? shown.map(card).join("") : `<div class="empty">Belum ada pesanan.</div>`;
+  const stats = EDIT_TABS.includes(K.tab) ? "" : `<div class="stats"><div class="stat">Pesanan aktif<b>${aktif.length}</b></div><div class="stat">Belum bayar<b>${unpaid}</b></div><div class="stat">Lunas hari ini<b>${rp(omzet)}</b></div></div>`;
+  kasir.innerHTML = `<div class="wrap">
+    <div class="top${np}"><h1>Kasir</h1><div class="tops"><button class="chip" id="openChip" data-act="open">${CAFE.open ? "🟢 Buka" : "🔴 Tutup"}</button><button class="chip" data-act="sound" aria-label="Suara">${K.sound ? "🔔" : "🔕"}</button><button class="chip" data-act="logout">Keluar</button></div></div>
+    <div class="${np.trim()}">${demoNote()}${K.error ? `<div class="banner">${esc(K.error)}</div>` : ""}</div>
+    ${stats}
+    <div class="tabs${np}">${tab("aktif", "Aktif")}${tab("riwayat", "Riwayat")}${tab("menu", "Menu")}${tab("pengaturan", "Pengaturan")}${tab("qr", "QR Meja")}</div>
+    ${body}</div>`;
+}
+
+function stopKasir() {
+  if (K.unsub) K.unsub();
+  if (K.menuUnsub) K.menuUnsub();
+  if (K.setUnsub) K.setUnsub();
+  K.unsub = null; K.menuUnsub = null; K.setUnsub = null; K.seen = null; K.orders = [];
+}
+
+function startKasir() {
+  stopKasir();
+  K.error = "";
+  K.menu = normalizeMenu(DEFAULT_MENU);
+  K.menuUnsub = backend.watchMenu(onMenuSnapshot, (e) => console.error("Menu gagal dimuat:", e));
+  K.setUnsub = backend.watchSettings(onSettingsSnapshot, (e) => console.error("Pengaturan gagal dimuat:", e));
+  K.unsub = backend.watchOrders((list) => {
+    const ids = new Set(list.map((o) => o.id));
+    if (K.seen && list.some((o) => !K.seen.has(o.id))) beep();
+    K.seen = ids;
+    K.orders = list;
+    K.error = "";
+    updateKasirTitle();
+    if (EDIT_TABS.includes(K.tab)) return; // jangan render ulang saat kasir sedang mengedit
+    renderKasir();
+  }, (e) => {
+    console.error(e);
+    K.error = "Tidak bisa membaca pesanan. Cek aturan Firestore dan koneksi.";
+    if (!EDIT_TABS.includes(K.tab)) renderKasir();
+  });
+  keepAwake();
+  renderKasir();
+}
+
+let kasirReady = false;
+function initKasir() {
+  if (kasirReady) return;
+  kasirReady = true;
+  kasir.innerHTML = `<div class="wrap"><div class="empty">Memuat...</div></div>`;
+  document.title = "Kasir - " + CAFE.name;
+  kasir.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const err = $("#lerr");
+    try { await backend.login($("#em").value.trim(), $("#pw").value); } catch (x) { console.error(x); err.textContent = "Email atau password salah."; }
+  });
+  kasir.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-act]");
+    if (!b) return;
+    const act = b.dataset.act;
+    if (act === "tab") {
+      K.tab = b.dataset.tab;
+      if (K.tab === "pengaturan") K.stQris = K.settings.qris;
+      renderKasir();
+      return;
+    }
+    if (act === "sound") { K.sound = !K.sound; renderKasir(); return; }
+    if (act === "logout") { await backend.logout(); return; }
+    if (act === "open") {
+      const next = normalizeSettings({ ...K.settings, open: !CAFE.open });
+      try { await backend.saveSettings(next); K.settings = next; applySettings(next); updateOpenChip(); }
+      catch (x) { console.error(x); alert("Gagal mengubah status buka/tutup. Coba lagi."); }
+      return;
+    }
+    if (MENU_ACTS.includes(act)) { await menuAction(act, b.dataset); return; }
+    if (act === "savesettings") { await saveSettingsNow(); return; }
+    if (act === "delqris") {
+      K.stQris = "";
+      const prev = $("#qrisPrev");
+      if (prev) { prev.hidden = true; prev.removeAttribute("src"); }
+      setMstat("QRIS dihapus. Klik Simpan pengaturan.");
+      return;
+    }
+    if (act === "qrgen") {
+      const base = $("#qrBase").value.trim();
+      const n = parseInt($("#qrN").value, 10);
+      if (!/^https?:\/\//i.test(base)) { setMstat("Alamat web harus diawali https:// (isi alamat cafe setelah di-deploy).", true); return; }
+      if (!Number.isInteger(n) || n < 1 || n > 60) { setMstat("Jumlah meja harus 1 sampai 60.", true); return; }
+      K.qr = { base, n };
+      renderKasir();
+      return;
+    }
+    if (act === "print") { window.print(); return; }
+    const patch = { lunas: { paid: true }, proses: { status: "diproses" }, selesai: { status: "selesai" }, batal: { status: "batal" } }[act];
+    if (!patch) return;
+    if (act === "batal" && !confirm("Batalkan pesanan ini?")) return;
+    b.disabled = true;
+    try { await backend.updateOrder(b.dataset.id, patch); } catch (x) { console.error(x); alert("Gagal memperbarui pesanan. Coba lagi."); b.disabled = false; }
+  });
+  kasir.addEventListener("change", (e) => {
+    if (e.target.id === "stQrisFile") { onQrisPicked(e.target); return; }
+    onMenuFieldChange(e);
+  });
+  backend.onAuth((ok) => {
+    K.authed = ok;
+    if (ok) startKasir(); else { stopKasir(); renderLogin(); }
+  });
+}
+
+/* --------------------------------- Router --------------------------------- */
+let custReady = false;
+function route() {
+  const isKasir = location.hash.startsWith("#/kasir");
+  $("#cust").hidden = isKasir;
+  kasir.hidden = !isKasir;
+  if (isKasir) { closeOv(); initKasir(); }
+  else if (!custReady) { custReady = true; initCustomer(); }
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
